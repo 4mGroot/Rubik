@@ -38,7 +38,7 @@ while True :
         count = (count+1)
 
         if all(len(data[0]) == 8 for data in datalist1[1:] if len(data) > 0):
-            print("ครบทุกลิสต์แล้ว! เลิกการทำงาน")
+            print("ครบทุก")
             break
 
 
