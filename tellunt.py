@@ -8,12 +8,13 @@ import threading
 from picamera2 import Picamera2, Controls
 
 
-data_font = []
+data_front = []
 data_right = []
 data_back = []
 data_left = []
 data_up = []
 data_down = []
+datalist_RBL=[data_right,data_back,data_left]
 
 # สร้าง I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -93,14 +94,26 @@ def capture(frame, circle_positions):
 def run_rotate_rbl_in_thread():
     thread = threading.Thread(target=rotate_RBL)
     thread.start()
+    
 
 def run_rotate_UD_in_thread():
     thread = threading.Thread(target=rotate_UD)
     thread.start()
+    
 
 
 def rotate_RBL():
     for _ in range(4):
+        # if _ == 0:  # รอบแรกเก็บใน data_front
+        #     frame = picam2.capture_array()
+        #     colors = capture(frame, circle_positions_1)
+        #     data_front.extend(colors)
+        #     print(f"ข้อมูลในด้าน Front: {data_front}")
+        # elif _ < 3:  # รอบที่ 2-3 เก็บใน datalist
+        #     frame = picam2.capture_array()
+        #     colors = capture(frame, circle_positions_1)
+        #     datalist_RBL[_ - 1].extend(colors)  # เก็บใน data_right และ data_back ตามลำดับ
+        #     print(f"ข้อมูลในด้านที่ {_}: {colors}")
         thread_up = threading.Thread(target=rotate_to_90_cw, args=(4,))
         thread_down = threading.Thread(target=rotate_to_90_ccw, args=(1,))
         thread_up.start()
@@ -114,7 +127,7 @@ def rotate_RBL():
             print("จับภาพเสร็จแล้วในรอบที่:", _ + 1)
 
         # พักระหว่างการหมุนแต่ละรอบ (ปรับเวลาได้ตามต้องการ)
-        time.sleep(2)
+        time.sleep(5)
 
 def rotate_UD():
     #บน
@@ -160,6 +173,14 @@ def rotate_UD():
     thread_right_return.join()
     time.sleep(1)
     rotate_to_90_ccw(1)
+    
+    # print("ข้อมูลที่เก็บได้ทั้งหมด:")
+    # print("Front:", data_front)
+    # print("Right:", data_right)
+    # print("Back:", data_back)
+    # print("Left:", data_left)
+    # print("up:", data_up)
+    # print("down:", data_down)
 
 
     # time.sleep(2)
@@ -202,10 +223,10 @@ focus_position = 10
 def set_focus(position):
     picam2.set_controls({"LensPosition": position})
     print(f"Focus set to: {position}")
-    set_focus(focus_position)
+set_focus(focus_position)
 
 cv2.namedWindow("Rubik Color Capture", cv2.WINDOW_NORMAL)
-cv2.resizeWindow("Rubik Color Capture", 1280, 720)  # กำหนดขนาดหน้าต่างให้ตรงกับขนาดภาพที่แสดง
+cv2.resizeWindow("Rubik Color Capture", 1280, 720)  
 
 try:
     while True:
@@ -216,15 +237,17 @@ try:
 
         draw_guidelines(frame_resized, circle_positions)
         
-        # แสดงภาพ
+        
         cv2.imshow("Rubik Color Capture", frame_resized)
 
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):  
             break
-        elif key == ord('e'):  # กด 'e' เพื่อบันทึกค่าสี
-            run_rotate_rbl_in_thread()
-            run_rotate_UD_in_thread()
+        elif key == ord('e'):  
+            run_rotate_rbl_in_thread
+            # run_rotate_UD_in_thread
+            
+            
 
 finally:
     picam2.stop()

@@ -4,7 +4,7 @@ data_back = []
 data_left = []
 data_up = []
 data_down = []
-datalist1 = [data_font,data_right,data_back,data_left,data_up,data_down]
+datalist1 = [data_right,data_back,data_left]
 count = 0
 first_list = False
 
@@ -24,9 +24,7 @@ while True :
             print(data_right)
             print(data_back)
             print(data_left)
-            print(data_up)
-            print(data_down)
-            print(count)
+            
             
             
     else:
