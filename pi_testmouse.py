@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from picamera2 import Picamera2, Controls
 
 # ฟังก์ชันแปลงค่าเฉลี่ยสี (BGR) เป็นตัวอักษรสี
 def convert_bgr_to_color(bgr):
